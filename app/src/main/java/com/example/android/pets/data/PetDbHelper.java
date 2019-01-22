@@ -22,7 +22,6 @@ public class PetDbHelper extends SQLiteOpenHelper {
                 +PetsEntry.COLUMN_PET_BREED+" TEXT,"
                 +PetsEntry.COLUMN_PET_GENDER+" INTEGER DEFAULT 0,"
                 +PetsEntry.COLUMN_PET_WEIGHT+" INTEGER NOT NULL DEFAULT 0);";
-        Log.e("this",SQL_CREATE_PETS_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_PETS_TABLE);
     }
 

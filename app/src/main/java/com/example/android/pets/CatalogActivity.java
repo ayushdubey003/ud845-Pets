@@ -66,6 +66,12 @@ public class CatalogActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        displayDatabaseInfo();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_catalog, menu);
         return true;

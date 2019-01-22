@@ -15,10 +15,14 @@
  */
 package com.example.android.pets;
 
+import android.content.ContentValues;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +30,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.example.android.pets.data.PetDbHelper;
 import com.example.android.pets.data.ShelterContract.PetsEntry;
 /**
  * Allows user to create a new pet or edit an existing one.
@@ -117,7 +124,8 @@ public class EditorActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
-                // Do nothing for now
+                insertData();
+                finish();
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
@@ -130,5 +138,28 @@ public class EditorActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void insertData() {
+        ContentValues values=new ContentValues();
+        mNameEditText=(EditText)findViewById(R.id.edit_pet_name);
+        values.put(PetsEntry.COLUMN_PET_NAME,mNameEditText.getText().toString().trim());
+        mBreedEditText=(EditText)findViewById(R.id.edit_pet_breed);
+        values.put(PetsEntry.COLUMN_PET_BREED,mBreedEditText.getText().toString().trim());
+        values.put(PetsEntry.COLUMN_PET_GENDER,mGender);
+        mWeightEditText=(EditText)findViewById(R.id.edit_pet_weight);
+        String weight=mWeightEditText.getText().toString();
+        weight=weight.trim();
+        if(weight==null||weight=="")
+            weight="0";
+        Log.e("this",weight);
+        values.put(PetsEntry.COLUMN_PET_WEIGHT, Integer.parseInt(weight));
+        PetDbHelper petDbHelper=new PetDbHelper(this);
+        SQLiteDatabase db=petDbHelper.getWritableDatabase();
+        long id=db.insert(PetsEntry.TABLE_NAME,null,values);
+        if(id!=-1)
+            Toast.makeText(this,"Inserted at "+Long.toString(id),Toast.LENGTH_LONG).show();
+        else
+            Toast.makeText(this,"Error",Toast.LENGTH_LONG).show();
     }
 }
