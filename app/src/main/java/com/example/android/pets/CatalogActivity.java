@@ -56,7 +56,19 @@ public class CatalogActivity extends AppCompatActivity {
         PetDbHelper mDbHelper = new PetDbHelper(this);
 
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + PetsEntry.TABLE_NAME, null);
+
+        String projection[] = {PetsEntry._ID.toString(),
+                PetsEntry.COLUMN_PET_NAME,
+                PetsEntry.COLUMN_PET_BREED,
+                PetsEntry.COLUMN_PET_GENDER,
+                PetsEntry.COLUMN_PET_WEIGHT};
+        Cursor cursor = db.query(PetsEntry.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null);
         try {
             TextView displayView = (TextView) findViewById(R.id.text_view_pet);
             displayView.setText("Number of rows in pets database table: " + cursor.getCount());
@@ -91,14 +103,14 @@ public class CatalogActivity extends AppCompatActivity {
     }
 
     private void insertData() {
-        ContentValues values=new ContentValues();
-        values.put(PetsEntry.COLUMN_PET_NAME,"Toto");
-        values.put(PetsEntry.COLUMN_PET_BREED,"Terrier");
-        values.put(PetsEntry.COLUMN_PET_GENDER,PetsEntry.GENDER_MALE);
-        values.put(PetsEntry.COLUMN_PET_WEIGHT,7);
-        PetDbHelper petDbHelper=new PetDbHelper(this);
-        SQLiteDatabase db=petDbHelper.getWritableDatabase();
-        db.insert(PetsEntry.TABLE_NAME,null,values);
+        ContentValues values = new ContentValues();
+        values.put(PetsEntry.COLUMN_PET_NAME, "Toto");
+        values.put(PetsEntry.COLUMN_PET_BREED, "Terrier");
+        values.put(PetsEntry.COLUMN_PET_GENDER, PetsEntry.GENDER_MALE);
+        values.put(PetsEntry.COLUMN_PET_WEIGHT, 7);
+        PetDbHelper petDbHelper = new PetDbHelper(this);
+        SQLiteDatabase db = petDbHelper.getWritableDatabase();
+        db.insert(PetsEntry.TABLE_NAME, null, values);
         displayDatabaseInfo();
     }
 }
