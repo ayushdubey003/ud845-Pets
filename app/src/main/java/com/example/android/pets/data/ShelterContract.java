@@ -2,14 +2,12 @@ package com.example.android.pets.data;
 
 import android.provider.BaseColumns;
 
-import com.sun.xml.internal.bind.v2.model.core.ID;
-
 public final class ShelterContract {
     private ShelterContract() {
     }
 
     public static final class PetsEntry implements BaseColumns {
-        public static final String TABLE = "pets";
+        public static final String TABLE_NAME = "pets";
         public static final String _ID = BaseColumns._ID;
         public static final String COLUMN_PET_NAME = "name";
         public static final String COLUMN_PET_GENDER = "gender";
