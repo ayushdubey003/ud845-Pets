@@ -62,6 +62,12 @@ public class CatalogActivity extends AppCompatActivity {
                 PetsEntry.COLUMN_PET_BREED,
                 PetsEntry.COLUMN_PET_GENDER,
                 PetsEntry.COLUMN_PET_WEIGHT};
+        TextView displayView = (TextView) findViewById(R.id.text_view_pet);
+        displayView.setText(PetsEntry._ID.toString() + "-" +
+                PetsEntry.COLUMN_PET_NAME + "-" +
+                PetsEntry.COLUMN_PET_BREED + "-" +
+                PetsEntry.COLUMN_PET_GENDER + "-" +
+                PetsEntry.COLUMN_PET_WEIGHT + "\n");
         Cursor cursor = db.query(PetsEntry.TABLE_NAME,
                 projection,
                 null,
@@ -70,11 +76,36 @@ public class CatalogActivity extends AppCompatActivity {
                 null,
                 null);
         try {
-            TextView displayView = (TextView) findViewById(R.id.text_view_pet);
-            displayView.setText("Number of rows in pets database table: " + cursor.getCount());
+            int cin = cursor.getColumnIndex(PetsEntry._ID);
+            int namein = cursor.getColumnIndex(PetsEntry.COLUMN_PET_NAME);
+            int breedin = cursor.getColumnIndex(PetsEntry.COLUMN_PET_BREED);
+            int genderin = cursor.getColumnIndex(PetsEntry.COLUMN_PET_GENDER);
+            int weightin = cursor.getColumnIndex(PetsEntry.COLUMN_PET_WEIGHT);
+            while (cursor.moveToNext()) {
+                int id = cursor.getInt(cin);
+                String name = cursor.getString(namein);
+                String breed = cursor.getString(breedin);
+                int gender = cursor.getInt(genderin);
+                int weight = cursor.getInt(weightin);
+                String to_append = Integer.toString(id) + "-" +
+                        name + "-" +
+                        breed + "-" +
+                        getGender(gender) + "-" +
+                        Integer.toString(weight) + "\n";
+                displayView.append(to_append);
+            }
         } finally {
             cursor.close();
         }
+    }
+
+    private String getGender(int gender) {
+        if (gender == PetsEntry.GENDER_MALE)
+            return "MALE";
+        else if (gender == PetsEntry.GENDER_FEMALE)
+            return "FEMALE";
+        else
+            return "UNKNOWN";
     }
 
     @Override
