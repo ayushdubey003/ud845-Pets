@@ -1,6 +1,7 @@
 package com.example.android.pets.data;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -13,12 +14,14 @@ public class PetProvider extends ContentProvider {
     private PetDbHelper mPetDbHelper;
     private static final int PETS = 100;
     private static final int PETS_ID = 101;
-    private static UriMatcher sUriMatcher =new UriMatcher(UriMatcher.NO_MATCH);
-    private static final String AUTHORITY="com.example.ayush.pets";
+    private static UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    private static final String AUTHORITY = "com.example.ayush.pets";
+
     static {
-        sUriMatcher.addURI(AUTHORITY,"pets",PETS);
-        sUriMatcher.addURI(AUTHORITY,"pets/#",PETS_ID);
+        sUriMatcher.addURI(AUTHORITY, "pets", PETS);
+        sUriMatcher.addURI(AUTHORITY, "pets/#", PETS_ID);
     }
+
     @Override
     public boolean onCreate() {
         mPetDbHelper = new PetDbHelper(getContext());
@@ -28,6 +31,34 @@ public class PetProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+        Cursor cursor = null;
+        SQLiteDatabase db = mPetDbHelper.getReadableDatabase();
+        int match = sUriMatcher.match(uri);
+        switch (match) {
+            case (PETS):
+                cursor = db.query(ShelterContract.PetsEntry.TABLE_NAME,
+                        projection,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null);
+                break;
+            case (PETS_ID):
+                selection = ShelterContract.PetsEntry._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                cursor = db.query(ShelterContract.PetsEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        null);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown Uri format");
+        }
+        return cursor;
     }
 
     @Nullable
