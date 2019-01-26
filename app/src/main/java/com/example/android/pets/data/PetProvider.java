@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 public class PetProvider extends ContentProvider {
     private PetDbHelper mPetDbHelper;
@@ -32,8 +33,8 @@ public class PetProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        Log.e("JJ","Here");
-        Cursor cursor ;
+        Log.e("JJ", "Here");
+        Cursor cursor;
         SQLiteDatabase db = mPetDbHelper.getReadableDatabase();
         int match = sUriMatcher.match(uri);
         switch (match) {
@@ -72,7 +73,18 @@ public class PetProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        return null;
+        int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PETS:
+                SQLiteDatabase db = mPetDbHelper.getWritableDatabase();
+                long id = db.insert(ShelterContract.PetsEntry.TABLE_NAME,
+                        null,
+                        values);
+                Toast.makeText(getContext(), "Pet Saved !", Toast.LENGTH_LONG).show();
+                return (Uri.parse("content://com.example.android.pets/pets/id"));
+            default:
+                throw new IllegalArgumentException("Pet cannot be saved");
+        }
     }
 
     @Override

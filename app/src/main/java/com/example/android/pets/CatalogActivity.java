@@ -111,6 +111,7 @@ public class CatalogActivity extends AppCompatActivity {
             return "UNKNOWN";
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onStart() {
         super.onStart();
@@ -136,15 +137,15 @@ public class CatalogActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void insertData() {
         ContentValues values = new ContentValues();
         values.put(PetsEntry.COLUMN_PET_NAME, "Toto");
         values.put(PetsEntry.COLUMN_PET_BREED, "Terrier");
         values.put(PetsEntry.COLUMN_PET_GENDER, PetsEntry.GENDER_MALE);
         values.put(PetsEntry.COLUMN_PET_WEIGHT, 7);
-        PetDbHelper petDbHelper = new PetDbHelper(this);
-        SQLiteDatabase db = petDbHelper.getWritableDatabase();
-        db.insert(PetsEntry.TABLE_NAME, null, values);
+        Uri uri = getContentResolver().insert(Uri.parse("content://com.example.android.pets/pets"),
+                values);
         displayDatabaseInfo();
     }
 }
