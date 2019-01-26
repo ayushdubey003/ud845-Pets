@@ -1,5 +1,6 @@
 package com.example.android.pets.data;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 public final class ShelterContract {
@@ -7,6 +8,8 @@ public final class ShelterContract {
     }
 
     public static final class PetsEntry implements BaseColumns {
+        public static final Uri BASE_URI=Uri.parse("content://com.example.android.pets");
+        public static final Uri uri=Uri.withAppendedPath(BASE_URI,"pets/");
         public static final String TABLE_NAME = "pets";
         public static final String _ID = BaseColumns._ID;
         public static final String COLUMN_PET_NAME = "name";

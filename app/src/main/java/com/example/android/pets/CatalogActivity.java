@@ -19,15 +19,20 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.android.pets.data.PetDbHelper;
+import com.example.android.pets.data.PetProvider;
 import com.example.android.pets.data.ShelterContract.PetsEntry;
 
 /**
@@ -35,6 +40,7 @@ import com.example.android.pets.data.ShelterContract.PetsEntry;
  */
 public class CatalogActivity extends AppCompatActivity {
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,10 +58,8 @@ public class CatalogActivity extends AppCompatActivity {
         displayDatabaseInfo();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void displayDatabaseInfo() {
-        PetDbHelper mDbHelper = new PetDbHelper(this);
-
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
         String projection[] = {PetsEntry._ID.toString(),
                 PetsEntry.COLUMN_PET_NAME,
@@ -68,9 +72,8 @@ public class CatalogActivity extends AppCompatActivity {
                 PetsEntry.COLUMN_PET_BREED + "-" +
                 PetsEntry.COLUMN_PET_GENDER + "-" +
                 PetsEntry.COLUMN_PET_WEIGHT + "\n");
-        Cursor cursor = db.query(PetsEntry.TABLE_NAME,
+        Cursor cursor = getContentResolver().query(PetsEntry.uri,
                 projection,
-                null,
                 null,
                 null,
                 null,

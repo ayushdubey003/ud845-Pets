@@ -9,13 +9,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 public class PetProvider extends ContentProvider {
     private PetDbHelper mPetDbHelper;
     private static final int PETS = 100;
     private static final int PETS_ID = 101;
     private static UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-    private static final String AUTHORITY = "com.example.ayush.pets";
+    public static final String AUTHORITY = "com.example.android.pets";
 
     static {
         sUriMatcher.addURI(AUTHORITY, "pets", PETS);
@@ -31,9 +32,11 @@ public class PetProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        Cursor cursor = null;
+        Log.e("JJ","Here");
+        Cursor cursor ;
         SQLiteDatabase db = mPetDbHelper.getReadableDatabase();
         int match = sUriMatcher.match(uri);
+        Log.e("jkdjdthis",Integer.toString(match));
         switch (match) {
             case (PETS):
                 cursor = db.query(ShelterContract.PetsEntry.TABLE_NAME,
