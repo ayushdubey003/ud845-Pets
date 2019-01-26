@@ -36,7 +36,6 @@ public class PetProvider extends ContentProvider {
         Cursor cursor ;
         SQLiteDatabase db = mPetDbHelper.getReadableDatabase();
         int match = sUriMatcher.match(uri);
-        Log.e("jkdjdthis",Integer.toString(match));
         switch (match) {
             case (PETS):
                 cursor = db.query(ShelterContract.PetsEntry.TABLE_NAME,
