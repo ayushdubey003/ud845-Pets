@@ -18,6 +18,8 @@ public class PetProvider extends ContentProvider {
     private static final int PETS_ID = 101;
     private static UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     public static final String AUTHORITY = "com.example.android.pets";
+    private static final String MULTIPLE_TYPE = "vnd.android.cursor.dir/com.example.android.pets/pets";
+    private static final String ITEM_TYPE = "vnd.android.cursor.item/com.example.android.pets/pets";
 
     static {
         sUriMatcher.addURI(AUTHORITY, "pets", PETS);
@@ -67,7 +69,15 @@ public class PetProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        return null;
+        int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PETS:
+                return MULTIPLE_TYPE;
+            case PETS_ID:
+                return ITEM_TYPE;
+            default:
+                throw new IllegalArgumentException("Error");
+        }
     }
 
     @Nullable
