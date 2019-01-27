@@ -76,10 +76,26 @@ public class PetProvider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         switch (match) {
             case PETS:
+                String name = values.getAsString(ShelterContract.PetsEntry.COLUMN_PET_NAME);
+                if (name == null) {
+                    throw new IllegalArgumentException("Pet requires a name");
+                }
+                Integer gender = values.getAsInteger(ShelterContract.PetsEntry.COLUMN_PET_GENDER);
+                if (gender == null || !ShelterContract.PetsEntry.isValidGender(gender)) {
+                    throw new IllegalArgumentException("Pet requires valid gender");
+                }
+                Integer weight = values.getAsInteger(ShelterContract.PetsEntry.COLUMN_PET_WEIGHT);
+                if (weight != null && weight < 0) {
+                    throw new IllegalArgumentException("Pet requires valid weight");
+                }
                 SQLiteDatabase db = mPetDbHelper.getWritableDatabase();
                 long id = db.insert(ShelterContract.PetsEntry.TABLE_NAME,
                         null,
                         values);
+                if (id == -1) {
+                    Log.e("this", "Failed to insert row for " + uri);
+                    return null;
+                }
                 Toast.makeText(getContext(), "Pet Saved !", Toast.LENGTH_LONG).show();
                 return (Uri.parse("content://com.example.android.pets/pets/id"));
             default:

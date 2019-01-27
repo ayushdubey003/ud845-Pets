@@ -159,10 +159,6 @@ public class EditorActivity extends AppCompatActivity {
         values.put(PetsEntry.COLUMN_PET_GENDER, mGender);
         mWeightEditText = (EditText) findViewById(R.id.edit_pet_weight);
         String weight = mWeightEditText.getText().toString();
-        weight = weight.trim();
-        if (weight == null || weight == "")
-            weight = "0";
-        Log.e("this", weight);
         values.put(PetsEntry.COLUMN_PET_WEIGHT, Integer.parseInt(weight));
         Uri uri = getContentResolver().insert(Uri.parse("content://com.example.android.pets/pets"),
                 values);
