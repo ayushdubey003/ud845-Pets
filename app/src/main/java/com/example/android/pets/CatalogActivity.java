@@ -30,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.pets.data.PetDbHelper;
 import com.example.android.pets.data.PetProvider;
@@ -132,10 +133,18 @@ public class CatalogActivity extends AppCompatActivity {
                 insertData();
                 return true;
             case R.id.action_delete_all_entries:
-                // Do nothing for now
+                deleteData();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteData() {
+        getContentResolver().delete(Uri.parse("content://com.example.android.pets/pets/"),
+                null,
+                null);
+        Toast.makeText(this, "Data deleted Succesfully", Toast.LENGTH_LONG).show();
+        displayDatabaseInfo();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
