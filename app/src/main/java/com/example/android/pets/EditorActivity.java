@@ -77,7 +77,11 @@ public class EditorActivity extends AppCompatActivity {
         mBreedEditText = (EditText) findViewById(R.id.edit_pet_breed);
         mWeightEditText = (EditText) findViewById(R.id.edit_pet_weight);
         mGenderSpinner = (Spinner) findViewById(R.id.spinner_gender);
-
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            this.setTitle("Edit Pet");
+            Log.e("this",uri.toString());
+        }
         setupSpinner();
     }
 

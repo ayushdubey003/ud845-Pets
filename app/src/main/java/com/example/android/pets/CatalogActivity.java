@@ -32,6 +32,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,6 +69,15 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         View emptyView = findViewById(R.id.empty_view);
         displayView.setEmptyView(emptyView);
         displayView.setAdapter(adapter);
+        displayView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Uri uri = Uri.parse("content://" + PetProvider.AUTHORITY + "/" + Long.toString(id) + "/");
+                Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
+                intent.setData(uri);
+                startActivity(intent);
+            }
+        });
         getLoaderManager().initLoader(LOADER_ID, null, this);
     }
 
