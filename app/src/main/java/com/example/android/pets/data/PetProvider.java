@@ -63,6 +63,7 @@ public class PetProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unknown Uri format");
         }
+        cursor.setNotificationUri(getContext().getContentResolver(), Uri.parse("content://" + AUTHORITY + "/pets/"));
         return cursor;
     }
 
@@ -107,6 +108,7 @@ public class PetProvider extends ContentProvider {
                     return null;
                 }
                 Toast.makeText(getContext(), "Pet Saved !", Toast.LENGTH_LONG).show();
+                getContext().getContentResolver().notifyChange(uri, null);
                 return (Uri.parse("content://com.example.android.pets/pets/id"));
             default:
                 throw new IllegalArgumentException("Pet cannot be saved");
@@ -130,9 +132,12 @@ public class PetProvider extends ContentProvider {
 
     private int deletePet(Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase db = mPetDbHelper.getWritableDatabase();
-        return db.delete(ShelterContract.PetsEntry.TABLE_NAME,
+        int rows= db.delete(ShelterContract.PetsEntry.TABLE_NAME,
                 selection,
                 selectionArgs);
+        if(rows!=0)
+            getContext().getContentResolver().notifyChange(uri,null);
+        return rows;
     }
 
     @Override
@@ -177,6 +182,8 @@ public class PetProvider extends ContentProvider {
                 values,
                 selection,
                 selectionArgs);
+        if(rows!=0)
+            getContext().getContentResolver().notifyChange(uri,null);
         return rows;
     }
 }
