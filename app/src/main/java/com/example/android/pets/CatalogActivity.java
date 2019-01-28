@@ -76,6 +76,8 @@ public class CatalogActivity extends AppCompatActivity {
                 null,
                 null);
         PetCursorAdapter adapter = new PetCursorAdapter(this, cursor, 0);
+        View emptyView = findViewById(R.id.empty_view);
+        displayView.setEmptyView(emptyView);
         displayView.setAdapter(adapter);
     }
 
