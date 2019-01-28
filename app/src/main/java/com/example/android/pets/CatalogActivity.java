@@ -29,6 +29,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,40 +68,15 @@ public class CatalogActivity extends AppCompatActivity {
                 PetsEntry.COLUMN_PET_BREED,
                 PetsEntry.COLUMN_PET_GENDER,
                 PetsEntry.COLUMN_PET_WEIGHT};
-        TextView displayView = (TextView) findViewById(R.id.text_view_pet);
-        displayView.setText(PetsEntry._ID.toString() + "-" +
-                PetsEntry.COLUMN_PET_NAME + "-" +
-                PetsEntry.COLUMN_PET_BREED + "-" +
-                PetsEntry.COLUMN_PET_GENDER + "-" +
-                PetsEntry.COLUMN_PET_WEIGHT + "\n");
+        ListView displayView = (ListView) findViewById(R.id.list);
         Cursor cursor = getContentResolver().query(PetsEntry.uri,
                 projection,
                 null,
                 null,
                 null,
                 null);
-        try {
-            int cin = cursor.getColumnIndex(PetsEntry._ID);
-            int namein = cursor.getColumnIndex(PetsEntry.COLUMN_PET_NAME);
-            int breedin = cursor.getColumnIndex(PetsEntry.COLUMN_PET_BREED);
-            int genderin = cursor.getColumnIndex(PetsEntry.COLUMN_PET_GENDER);
-            int weightin = cursor.getColumnIndex(PetsEntry.COLUMN_PET_WEIGHT);
-            while (cursor.moveToNext()) {
-                int id = cursor.getInt(cin);
-                String name = cursor.getString(namein);
-                String breed = cursor.getString(breedin);
-                int gender = cursor.getInt(genderin);
-                int weight = cursor.getInt(weightin);
-                String to_append = Integer.toString(id) + "-" +
-                        name + "-" +
-                        breed + "-" +
-                        getGender(gender) + "-" +
-                        Integer.toString(weight) + "\n";
-                displayView.append(to_append);
-            }
-        } finally {
-            cursor.close();
-        }
+        PetCursorAdapter adapter = new PetCursorAdapter(this, cursor, 0);
+        displayView.setAdapter(adapter);
     }
 
     private String getGender(int gender) {
