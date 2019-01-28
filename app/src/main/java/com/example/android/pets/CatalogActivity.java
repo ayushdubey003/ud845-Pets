@@ -15,8 +15,11 @@
  */
 package com.example.android.pets;
 
+import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -40,7 +43,10 @@ import com.example.android.pets.data.ShelterContract.PetsEntry;
 /**
  * Displays list of pets that were entered and stored in the app.
  */
-public class CatalogActivity extends AppCompatActivity {
+public class CatalogActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    PetCursorAdapter adapter;
+    private static int LOADER_ID = 1;
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -57,29 +63,14 @@ public class CatalogActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        displayDatabaseInfo();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    private void displayDatabaseInfo() {
-
-        String projection[] = {PetsEntry._ID.toString(),
-                PetsEntry.COLUMN_PET_NAME,
-                PetsEntry.COLUMN_PET_BREED,
-                PetsEntry.COLUMN_PET_GENDER,
-                PetsEntry.COLUMN_PET_WEIGHT};
+        adapter = new PetCursorAdapter(this, null, 0);
         ListView displayView = (ListView) findViewById(R.id.list);
-        Cursor cursor = getContentResolver().query(PetsEntry.uri,
-                projection,
-                null,
-                null,
-                null,
-                null);
-        PetCursorAdapter adapter = new PetCursorAdapter(this, cursor, 0);
         View emptyView = findViewById(R.id.empty_view);
         displayView.setEmptyView(emptyView);
         displayView.setAdapter(adapter);
+        getLoaderManager().initLoader(LOADER_ID, null, this);
     }
+
 
     private String getGender(int gender) {
         if (gender == PetsEntry.GENDER_MALE)
@@ -94,7 +85,6 @@ public class CatalogActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        displayDatabaseInfo();
     }
 
     @Override
@@ -117,12 +107,12 @@ public class CatalogActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void deleteData() {
         getContentResolver().delete(Uri.parse("content://com.example.android.pets/pets/"),
                 null,
                 null);
         Toast.makeText(this, "Data deleted Succesfully", Toast.LENGTH_LONG).show();
-        displayDatabaseInfo();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -134,6 +124,30 @@ public class CatalogActivity extends AppCompatActivity {
         values.put(PetsEntry.COLUMN_PET_WEIGHT, 7);
         Uri uri = getContentResolver().insert(Uri.parse("content://com.example.android.pets/pets"),
                 values);
-        displayDatabaseInfo();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String projection[] = {PetsEntry._ID.toString(),
+                PetsEntry.COLUMN_PET_NAME,
+                PetsEntry.COLUMN_PET_BREED,
+                PetsEntry.COLUMN_PET_GENDER,
+                PetsEntry.COLUMN_PET_WEIGHT};
+        return (new CursorLoader(this,
+                Uri.parse("content://com.example.android.pets/pets"),
+                projection,
+                null,
+                null,
+                null));
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        adapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        adapter.swapCursor(null);
     }
 }
